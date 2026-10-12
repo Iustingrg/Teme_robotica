@@ -1,0 +1,72 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
+
+@TeleOp(name = "BasicRobot", group = "Tema")
+public class BasicRobot extends OpMode {
+
+    private DcMotor motor_left;
+    private DcMotor motor_right;
+    private Servo armPivot;
+    private Servo claw;
+
+    private static final double ARM_UP = 0.85;
+    private static final double ARM_DOWN = 0.2;
+    private static final double CLAW_OPEN = 1;
+    private static final double CLAW_CLOSED = 0;
+    
+    private boolean clawOpen = false;
+    private boolean lastX = false;
+
+    @Override public void init() {
+        motorLeft = hardwareMap.get(DcMotor.class, "motor_left");
+        motorRight = hardwareMap.get(DcMotor.class, "motor_right");
+        armPivot = hardwareMap.get(Servo.class, "arm_pivot");
+        claw = hardwareMap.get(Servo.class, "claw");
+
+        motorLeft.setDirection(DcMotor.Direction.REVERSE);
+        motorRight.setDirection(DcMotor.Direction.FORWARD);
+
+        armPivot.setPosition(ARM_DOWN);
+        claw.setPosition(CLAW_CLOSED);
+
+        telemetry.addData("Status:", "Initializat");
+        telemetry.update();
+    }
+    
+    @Override public void init_loop() {
+        telemetry.addData("Status:", "Robot pregatit: apasa ");
+        telemetry.update();
+    }
+
+    @Override public void loop() {
+        double leftPower = Range.clip(-gamepad1.left_stick_y, -1.0, 1.0);
+        double rightPower = Range.clip(gamepad1.right_stick_y, -1.0, 1.0);
+ 
+        motorLeft.setPower(leftPower);
+        motorRight.setPower(rightPower);
+ 
+        if (gamepad1.dpad_up) {
+            armPivot.setPosition(ARM_UP);
+        } else if (gamepad1.dpad_down) {
+            armPivot.setPosition(ARM_DOWN);
+        }
+ 
+        boolean xPressed = gamepad1.x;
+        if (xPressed && !lastX) {
+            clawOpen = !clawOpen;
+            claw.setPosition(clawOpen ? CLAW_OPEN : CLAW_CLOSED);
+        }
+        lastX = xPressed;
+
+        telemetry.addData("Putere stanga:", leftPower);
+        telemetry.addData("Putere dreapta:", rightPower);
+        telemetry.addData("Pozitie brat:", armPivot.getPosition());
+        telemetry.addData("Gheara:", clawOpen ? "deschisa" : "inchisa");
+        telemetry.update();
+    }  
+}
