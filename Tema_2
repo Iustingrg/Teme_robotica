@@ -1,7 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-@Autonomous(name = "Tema Autonom FSM")
-public class TemaAutonomFSM extends OpMode {
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+@Autonomous(name = "TemaAutonom_FSM", group = "Tema")
+public class TemaAutonom_FSM extends OpMode {
 
     public enum State {INITIAL, DRIVE_FORWARD, LOWER_ARM, CHECK_SENSOR, GRAB_ELEMENT, DRIVE_BACKWARD, IDLE}
 
@@ -17,8 +24,7 @@ public class TemaAutonomFSM extends OpMode {
 
     final int ARM_TARGET = 1440;
 
-    @Override
-    public void init() {
+    @Override public void init() {
         leftMotor  = hardwareMap.get(DcMotor.class, "leftMotor");
         rightMotor = hardwareMap.get(DcMotor.class, "rightMotor");
         armMotor   = hardwareMap.get(DcMotor.class, "armMotor");
@@ -28,12 +34,11 @@ public class TemaAutonomFSM extends OpMode {
         rightMotor.setDirection(DcMotor.Direction.REVERSE);
         armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        telemetry.addData("Status", "Initializat");
+        telemetry.addData("Status:", "Initializat");
         telemetry.update();
     }
 
-    @Override
-    public void loop() {
+    @Override public void loop() {
 
         switch (currentState) {
 
@@ -85,9 +90,9 @@ public class TemaAutonomFSM extends OpMode {
                 break;
         }
 
-        telemetry.addData("Stare", currentState);
-        telemetry.addData("Timer (s)", timer.seconds());
-        telemetry.addData("Senzor apasat", touch.isPressed());
+        telemetry.addData("Stare:", currentState);
+        telemetry.addData("Timer:", timer.seconds());
+        telemetry.addData("Senzor apasat:", touch.isPressed());
         telemetry.update();
     }
 
